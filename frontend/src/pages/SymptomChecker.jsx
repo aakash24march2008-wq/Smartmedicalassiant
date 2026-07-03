@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, Loader2, AlertCircle, ShieldAlert, ChevronRight, Stethoscope, HeartPulse } from 'lucide-react';
 import { api } from '../services/api';
-import ReactMarkdown from 'react-markdown';
 
 export default function SymptomChecker() {
   const [symptoms, setSymptoms] = useState('');
@@ -21,10 +20,27 @@ export default function SymptomChecker() {
     setError(null);
 
     try {
-      const response = await api.checkSymptoms({ symptoms });
+      const payload = {
+        symptoms: [symptoms],
+        age: "Unknown",
+        gender: "Unknown",
+        duration: "Unknown",
+        severity: "Unknown",
+        history: "None"
+      };
+      const response = await api.checkSymptoms(payload);
       setResult(response.data);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to analyze symptoms. Please try again.');
+      let errorMsg = 'Failed to analyze symptoms. Please try again.';
+      if (err.response?.data?.detail) {
+        const detail = err.response.data.detail;
+        if (typeof detail === 'string') errorMsg = detail;
+        else if (Array.isArray(detail)) errorMsg = detail.map(d => d.msg || JSON.stringify(d)).join(', ');
+        else errorMsg = JSON.stringify(detail);
+      } else if (err.message) {
+        errorMsg = err.message;
+      }
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -135,7 +151,7 @@ export default function SymptomChecker() {
                   <Stethoscope className="h-5 w-5 text-vc-blue" /> Possible Conditions
                 </h3>
                 <ul className="space-y-3">
-                  {result.possible_conditions?.map((condition, i) => (
+                  {result.conditions?.map((condition, i) => (
                     <li key={i} className="flex items-start gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
                       <ChevronRight className="h-5 w-5 text-vc-sky flex-shrink-0" />
                       <span className="text-sm font-semibold text-gray-700">{condition}</span>
@@ -150,7 +166,12 @@ export default function SymptomChecker() {
                   <Activity className="h-5 w-5 text-vc-blue" /> Recommended Action
                 </h3>
                 <div className="prose prose-sm prose-p:leading-relaxed text-gray-700">
-                  <ReactMarkdown>{result.recommendations || ''}</ReactMarkdown>
+                  <ul className="list-disc pl-5 space-y-2 mb-4">
+                    {result.lifestyle_advice?.map((advice, i) => (
+                      <li key={i}>{advice}</li>
+                    ))}
+                  </ul>
+                  <p className="text-xs text-gray-500 italic mt-4">{result.disclaimer}</p>
                 </div>
               </div>
             </div>
