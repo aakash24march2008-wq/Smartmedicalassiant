@@ -65,7 +65,8 @@ export default function Chat() {
       const chatHistory = messages.filter(m => m.role !== 'system');
       
       console.log("Sending chat request to backend with history:", chatHistory);
-      const response = await fetch('http://localhost:8000/api/chat/stream', {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+      const response = await fetch(`${baseUrl}/chat/stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
