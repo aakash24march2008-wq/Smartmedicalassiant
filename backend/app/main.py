@@ -33,6 +33,7 @@ origins = [
     "https://smartmedicalassiant.vercel.app",
     "https://frontend-gilt-nine-rc0o3o9lhx.vercel.app",
     "https://frontend-a8a2mjuma-aakash24march2008-wqs-projects.vercel.app",
+    "https://smartmedicalassiant.onrender.com",
 ]
 
 # Allow any custom FRONTEND_URL set via env var (e.g. your Vercel deployment URL)
