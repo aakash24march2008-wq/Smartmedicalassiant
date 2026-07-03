@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, Send, Loader2, AlertCircle, ShieldAlert, ChevronRight, Stethoscope, HeartPulse } from 'lucide-react';
+import { Activity, Loader2, AlertCircle, ShieldAlert, ChevronRight, Stethoscope, HeartPulse } from 'lucide-react';
 import { api } from '../services/api';
 import ReactMarkdown from 'react-markdown';
 
@@ -12,7 +12,10 @@ export default function SymptomChecker() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!symptoms.trim()) return;
+    if (!symptoms.trim()) {
+      setError("Please describe your symptoms before analyzing.");
+      return;
+    }
     
     setLoading(true);
     setError(null);
@@ -67,7 +70,9 @@ export default function SymptomChecker() {
             
             <AnimatePresence>
               {error && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+                <motion.div 
+                  key="error-box"
+                  initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
                   className="mb-4 flex items-start gap-2 text-red-600 bg-red-50 p-3 rounded-xl border border-red-100 text-sm"
                 >
                   <AlertCircle className="h-5 w-5 flex-shrink-0" />
@@ -145,7 +150,7 @@ export default function SymptomChecker() {
                   <Activity className="h-5 w-5 text-vc-blue" /> Recommended Action
                 </h3>
                 <div className="prose prose-sm prose-p:leading-relaxed text-gray-700">
-                  <ReactMarkdown>{result.recommendations}</ReactMarkdown>
+                  <ReactMarkdown>{result.recommendations || ''}</ReactMarkdown>
                 </div>
               </div>
             </div>

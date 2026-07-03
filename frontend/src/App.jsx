@@ -44,8 +44,8 @@ function AppLayout() {
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/image-diagnosis" element={<ProtectedRoute><Diagnosis /></ProtectedRoute>} />
           <Route path="/report-analyzer" element={<ProtectedRoute><ReportAnalyzer /></ProtectedRoute>} />
-          <Route path="/knowledge-chatbot" element={<ProtectedRoute><ProtectedRoute><ErrorBoundary><Chat /></ErrorBoundary></ProtectedRoute></ProtectedRoute>} />
-          <Route path="/symptom-checker" element={<ProtectedRoute><SymptomChecker /></ProtectedRoute>} />
+          <Route path="/knowledge-chatbot" element={<ProtectedRoute><ErrorBoundary><Chat /></ErrorBoundary></ProtectedRoute>} />
+          <Route path="/symptom-checker" element={<ProtectedRoute><ErrorBoundary><SymptomChecker /></ErrorBoundary></ProtectedRoute>} />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
